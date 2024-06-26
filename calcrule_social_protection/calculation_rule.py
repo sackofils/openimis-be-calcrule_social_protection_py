@@ -5,7 +5,7 @@ from calcrule_social_protection.config import CLASS_RULE_PARAM_VALIDATION, DESCR
 from core.abs_calculation_rule import AbsCalculationRule
 from core.signals import *
 from core import datetime
-
+from contribution_plan.models import PaymentPlan
 
 class SocialProtectionCalculationRule(AbsCalculationRule):
     version = 1
@@ -21,12 +21,12 @@ class SocialProtectionCalculationRule(AbsCalculationRule):
     sub_type = "benefit_plan"
     CLASS_NAME_CHECK = ['PaymentPlan']
 
-    signal_get_rule_name = Signal(providing_args=[])
-    signal_get_rule_details = Signal(providing_args=[])
-    signal_get_param = Signal(providing_args=[])
-    signal_get_linked_class = Signal(providing_args=[])
-    signal_calculate_event = Signal(providing_args=[])
-    signal_convert_from_to = Signal(providing_args=[])
+    signal_get_rule_name = Signal([])
+    signal_get_rule_details = Signal([])
+    signal_get_param = Signal([])
+    signal_get_linked_class = Signal([])
+    signal_calculate_event = Signal([])
+    signal_convert_from_to = Signal([])
 
     @classmethod
     def ready(cls):
@@ -44,8 +44,11 @@ class SocialProtectionCalculationRule(AbsCalculationRule):
                 cls.signal_convert_from_to.connect(cls.run_convert, dispatch_uid="on_convert_from_to")
 
     @classmethod
-    def run_calculation_rules(cls, sender, payment_plan, user, context, **kwargs):
-        return cls.calculate_if_active_for_object(payment_plan, **kwargs)
+    def run_calculation_rules(cls, sender, instance, user, context, **kwargs):
+        if isinstance(instance, PaymentPlan):
+            return cls.calculate_if_active_for_object(instance, **kwargs)
+        else:
+            return False
 
     @classmethod
     def calculate_if_active_for_object(cls, payment_plan, **kwargs):
@@ -53,7 +56,7 @@ class SocialProtectionCalculationRule(AbsCalculationRule):
             return cls.calculate(payment_plan, **kwargs)
 
     @classmethod
-    def active_for_object(cls, payment_plan):
+    def active_for_object(cls, payment_plan, **kwargs):
         return cls.check_calculation(payment_plan)
 
     @classmethod
@@ -88,8 +91,8 @@ class SocialProtectionCalculationRule(AbsCalculationRule):
 
     @classmethod
     def get_payment_cycle_parameters(cls, **kwargs):
-        audit_user_id = kwargs.get('audit_user_id', None)
+        user_id = kwargs.get('user_id', None)
         start_date = kwargs.get('start_date', None)
         end_date = kwargs.get('end_date', None)
         payment_cycle = kwargs.get('payment_cycle', None)
-        return audit_user_id, start_date, end_date, payment_cycle
+        return user_id, start_date, end_date, payment_cycle
