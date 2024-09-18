@@ -8,6 +8,7 @@ from core import datetime
 from contribution_plan.models import PaymentPlan
 from django.contrib.contenttypes.models import ContentType
 
+from uuid import UUID
 
 class SocialProtectionCalculationRule(AbsStrategy):
     version = 1
@@ -59,7 +60,7 @@ class SocialProtectionCalculationRule(AbsStrategy):
             if instance.__class__.__name__ in cls.CLASS_NAME_CHECK:
                 if cls.check_calculation(payment_plan=instance):
                     return rule_details["parameters"] if "parameters" in rule_details else []
-            elif instance.__class__.__name__ == 'ABCMeta' and cls.uuid == str(instance.uuid):
+            elif instance.__class__.__name__ == 'ABCMeta' and UUID(cls.uuid) == UUID(instance.uuid):
                 return rule_details["parameters"] if "parameters" in rule_details else []
 
     @classmethod
