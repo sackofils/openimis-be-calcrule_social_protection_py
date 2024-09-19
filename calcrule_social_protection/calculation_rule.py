@@ -60,7 +60,7 @@ class SocialProtectionCalculationRule(AbsStrategy):
             if instance.__class__.__name__ in cls.CLASS_NAME_CHECK:
                 if cls.check_calculation(payment_plan=instance):
                     return rule_details["parameters"] if "parameters" in rule_details else []
-            elif instance.__class__.__name__ == 'ABCMeta' and UUID(cls.uuid) == UUID(instance.uuid):
+            elif instance.__class__.__name__ == 'ABCMeta' and UUID(str(cls.uuid)) == UUID(str(instance.uuid)):
                 return rule_details["parameters"] if "parameters" in rule_details else []
 
     @classmethod
