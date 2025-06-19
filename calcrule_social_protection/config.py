@@ -6,7 +6,8 @@ CLASS_RULE_PARAM_VALIDATION = [
                 "type": "number",
                 "name": "fixed_batch",
                 "label": {
-                    "en": "Fixed amount",
+                    # "en": "Fixed amount",
+                    "en": "Montant fixé",
                     "fr": "Lot fixe"
                 },
                 "rights": {
@@ -23,7 +24,8 @@ CLASS_RULE_PARAM_VALIDATION = [
                 "type": "number",
                 "name": "limit_per_single_transaction",
                 "label": {
-                    "en": "Limit Per Single Transaction",
+                    # "en": "Limit Per Single Transaction",
+                    "en": "Limite par transaction unique",
                     "fr": "Limite par transaction unique"
                 },
                 "rights": {
